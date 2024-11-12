@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수능순웅 - 문제 풀이</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: #FFF5F5;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* 상단 네비게이션 */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .nav-button {
+            border: 2px solid #000;
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .subject-tag {
+            background-color: #A8D1D1;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #E74C3C;
+        }
+
+        /* 메인 콘텐츠 레이아웃 */
+        .content-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: calc(100vh - 120px);
+        }
+
+        /* 지문 영역 */
+        .passage-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .passage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .passage-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #333;
+            white-space: pre-line;
+        }
+
+        /* 문제 영역 */
+        .questions-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            margin-bottom: 2.5rem;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .question-points {
+            background-color: #F0F8FF;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-item:hover {
+            background-color: #F0F8FF;
+            border-color: #A8D1D1;
+        }
+
+        .option-item.selected {
+            background-color: #E3F2FD;
+            border-color: #A8D1D1;
+        }
+
+        .option-number {
+            margin-right: 1rem;
+            color: #666;
+            min-width: 20px;
+        }
+
+        /* 하단 버튼 */
+        .bottom-buttons {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .submit-button {
+            background-color: #A8D1D1;
+            color: #000;
+        }
+
+        .submit-button:hover {
+            background-color: #8FB9B9;
+        }
+
+        /* 스크롤바 스타일 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #A8D1D1;
+            border-radius: 4px;
+        }
+
+        /* 팝업 스타일 */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .popup-content {
+            text-align: center;
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 1024px) {
+            .content-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .passage-container,
+            .questions-container {
+                height: auto;
+                max-height: 500px;
+            }
+
+            .bottom-buttons {
+                position: static;
+                margin-top: 1rem;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-container">
+        <a href="subjects.html" class="nav-button">수능순웅</a>
+        <div class="subject-tag">독서</div>
+        <div class="timer">14:59</div>
+        <a href="mypage.html" class="nav-button">내 정보</a>
+    </nav>
+
+    <div class="content-container">
+        <div class="passage-container">
+            <div class="passage-header">
+                <h2>2024학년도 대학수학능력시험</h2>
+                <button class="action-button" onclick="toggleHighlight()">형광펜</button>
+            </div>
+            <div class="passage-content" id="passage">
+                <!-- 지문 내용은 JavaScript로 동적 로드 -->
+            </div>
+        </div>
+
+        <div class="questions-container">
+            <div id="questions">
+                <!-- 문제 내용은 JavaScript로 동적 로드 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-buttons">
+        <button class="action-button submit-button" onclick="submitAnswers()">제출하기</button>
+    </div>
+
+    <!-- 제출 확인 팝업 -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="submitPopup">
+        <div class="popup-content">
+            <h3>답안을 제출하시겠습니까?</h3>
+            <p>제출 후에는 수정이 불가능합니다.</p>
+            <div class="popup-buttons">
+                <button class="action-button" onclick="closePopup()">취소</button>
+                <button class="action-button submit-button" onclick="confirmSubmit()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import QuestionLoader from '../utils/questionLoader.js';
+
+        let currentQuestionSet = null;
+        let selectedAnswers = new Map();
+        let timer = null;
+        let highlightMode = false;
+
+        // question.html의 스크립트 부분
+        async function initializePage() {
+            const subject = sessionStorage.getItem('selectedSubject');
+            if (!subject) {
+                // 과목이 선택되지 않았다면 과목 선택 페이지로 리다이렉트
+                window.location.href = 'subjects.html';
+                return;
+            }
+
+            try {
+                // 선택된 과목에 따라 적절한 JSON 파일 로드
+                const response = await fetch(`../data/question-${subject}.json`);
+                const questionData = await response.json();
+                
+                // 지문 렌더링
+                renderPassage(questionData.passage);
+                
+                // 문제 렌더링
+                renderQuestions(questionData.questionSet);
+                
+                // 타이머 시작
+                startTimer(questionData.metadata.timeExpected);
+            } catch (error) {
+                console.error('Failed to load question data:', error);
+            }
+        }
+        function renderPassage(passage) {
+            const passageElement = document.getElementById('passage');
+            passageElement.textContent = passage.content;
+        }
+
+        function renderQuestions(questions) {
+            const questionsContainer = document.getElementById('questions');
+            questionsContainer.innerHTML = questions.map((question, index) => `
+                <div class="question">
+                    <div class="question-header">
+                        <div class="question-number">문제 ${index + 1}</div>
+                        <div class="question-points">${question.points}점</div>
+                    </div>
+                    <p class="question-content">${question.content}</p>
+                    <ul class="options-list">
+                        ${question.options.map((option, optIndex) => `
+                            <li class="option-item" onclick="selectAnswer(${index + 1}, ${option.id})">
+                                <span class="option-number">${optIndex + 1}</span>
+                                <span class="option-text">${option.text}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function startTimer(seconds) {
+            const timerElement = document.querySelector('.timer');
+            let remainingTime = seconds;
+
+            timer = setInterval(() => {
+                remainingTime--;
+                if (remainingTime <= 0) {
+                    clearInterval(timer);
+                    submitAnswers();
+                }
+
+                const minutes = Math.floor(remainingTime / 60);
+                const secs = remainingTime % 60;
+                timerElement.textContent = `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function selectAnswer(questionNumber, optionId) {
+            selectedAnswers.set(questionNumber, optionId);
+            
+            // 선택된 답안 시각적 표시
+            const options = document.querySelectorAll(`.question:nth-child(${questionNumber}) .option-item`);
+            options.forEach(option => option.classList.remove('selected'));
+            document.querySelector(`.question:nth-child(${questionNumber}) .option-item:nth-child(${optionId})`).classList.add('selected');
+        }
+
+        function toggleHighlight() {
+            highlightMode = !highlightMode;
+            document.body.style.cursor = highlightMode ? 'crosshair' : 'default';
+        }
+
+        function submitAnswers() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('submitPopup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('submitPopup').style.display = 'none';
+        }
+
+        async function confirmSubmit() {
+            // 답안 제출 처리
+            try {
+                await QuestionLoader.saveAnswer(
+                    'userId', // 실제 구현시 사용자 ID 필요
+                    currentQuestionSet.id,
+                    selectedAnswers
+                );
+                window.location.href = 'result?id=' + currentQuestionSet.id;
+            } catch (error) {
+                console.error('Failed to submit answers:', error);
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', initializePage);
+
+        // 전역 함수로 노출
+        window.selectAnswer = selectAnswer;
+        window.toggleHighlight = toggleHighlight;
+        window.submitAnswers = submitAnswers;
+        window.closePopup = closePopup;
+        window.confirmSubmit = confirmSubmit;
+    </script>
+</body>
+</html>

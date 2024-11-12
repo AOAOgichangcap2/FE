@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수능순웅 - 국어 과목 선택</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: #FFF5F5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        /* 네비게이션 스타일 */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 3rem;
+        }
+
+        .nav-button {
+            display: inline-block;
+            border: 2px solid #000;
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: #000;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* 메인 컨텐츠 스타일 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .subject-button {
+            background-color: #F0F8FF;
+            border: none;
+            border-radius: 25px;
+            padding: 1.5rem;
+            font-size: 1.3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subject-button:hover {
+            background-color: #E0F0FF;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* 반응형 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .subject-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .subject-button {
+                padding: 1.2rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* 버튼 컨테이너 스타일 */
+        .subject-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-container">
+        <a href="landing.html" class="nav-button">수능순웅</a>
+        <a href="mypage.html" class="nav-button">내 정보</a>
+    </nav>
+
+    <main class="main-content">
+        <div class="subject-container">
+            <div class="subject-grid">
+                <button onclick="loadQuestions('reading')" class="subject-button">독서</button>
+                <button onclick="loadQuestions('literature')" class="subject-button">문학</button>
+                <button onclick="loadQuestions('grammar')" class="subject-button">화법과 작문</button>
+                <button onclick="loadQuestions('language')" class="subject-button">언어와 매체</button>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+    function loadQuestions(subject) {
+        // 선택한 과목을 세션 스토리지에 저장
+        sessionStorage.setItem('selectedSubject', subject);
+        
+        // question.html로 이동
+        window.location.href = 'question.html';
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수능순웅 - 마이페이지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: #FFF5F5;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* 네비게이션 */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-button {
+            border: 2px solid #000;
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* 메인 그리드 레이아웃 */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        /* 프로필 섹션 */
+        .profile-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            background: #A8D1D1;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-school {
+            color: #666;
+        }
+
+        /* 스트릭 캘린더 */
+        .streak-calendar {
+            margin-top: 2rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .calendar-day.active {
+            background: #A8D1D1;
+        }
+
+        .calendar-day.today {
+            border: 2px solid #666;
+        }
+
+        /* 학습 현황 섹션 */
+        .content-section {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 2rem;
+        }
+
+        /* 상단 통계 카드들 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #A8D1D1;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 최근 활동 */
+        .recent-activity {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #f0f0f0;
+        }
+
+        .activity-info {
+            flex: 1;
+        }
+
+        .activity-subject {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .activity-score {
+            background: #A8D1D1;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-container">
+        <a href="subject.html" class="nav-button">수능순웅</a>
+        <a href="mypage.html" class="nav-button">로그아웃</a>
+    </nav>
+
+    <div class="main-grid">
+        <!-- 왼쪽 프로필 섹션 -->
+        <div class="profile-section">
+            <div class="profile-header">
+                <div class="profile-image"></div>
+                <h2 class="profile-name">홍길동</h2>
+                <p class="profile-school">대한고등학교 2학년</p>
+            </div>
+
+            <div class="streak-calendar">
+                <h3>학습 스트릭</h3>
+                <p style="margin: 0.5rem 0">현재 14일 연속 학습 중!</p>
+                <div class="calendar-grid">
+                    <!-- JavaScript로 동적 생성 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 콘텐츠 섹션 -->
+        <div class="content-section">
+            <!-- 상단 통계 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">14</div>
+                    <div class="stat-label">연속 학습일</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">정답률</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">32</div>
+                    <div class="stat-label">총 학습 시간</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">128</div>
+                    <div class="stat-label">푼 문제 수</div>
+                </div>
+            </div>
+
+            <!-- 최근 활동 -->
+            <div class="recent-activity">
+                <div class="activity-header">
+                    <h3>최근 학습 기록</h3>
+                    <select>
+                        <option>전체</option>
+                        <option>독서</option>
+                        <option>문학</option>
+                        <option>화법과 작문</option>
+                        <option>언어와 매체</option>
+                    </select>
+                </div>
+
+                <div class="activity-list">
+                    <!-- JavaScript로 동적 생성 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 스트릭 캘린더 생성
+        function createStreakCalendar() {
+            const grid = document.querySelector('.calendar-grid');
+            const today = new Date();
+            const streakData = getStreakData(); // API에서 데이터 가져오기
+
+            for (let i = 27; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day';
+                
+                if (streakData[i]) {
+                    day.classList.add('active');
+                }
+                
+                if (i === 0) {
+                    day.classList.add('today');
+                }
+                
+                grid.appendChild(day);
+            }
+        }
+
+        // 최근 활동 목록 생성
+        function createActivityList() {
+            const activityList = document.querySelector('.activity-list');
+            const activities = getRecentActivities(); // API에서 데이터 가져오기
+
+            activityList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <div class="activity-subject">${activity.subject}</div>
+                        <div class="activity-date">${activity.date}</div>
+                    </div>
+                    <div class="activity-score">${activity.score}점</div>
+                </div>
+            `).join('');
+        }
+
+        // 임시 데이터 생성 함수
+        function getStreakData() {
+            return Array(28).fill().map(() => Math.random() > 0.3);
+        }
+
+        function getRecentActivities() {
+            return [
+                { subject: '독서 - 과학 지문', date: '2024.03.11', score: 90 },
+                { subject: '문학 - 현대시', date: '2024.03.11', score: 85 },
+                { subject: '화법과 작문 - 화법', date: '2024.03.10', score: 95 },
+                { subject: '독서 - 인문 지문', date: '2024.03.10', score: 80 },
+                { subject: '언어와 매체 - 매체', date: '2024.03.09', score: 88 }
+            ];
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            createStreakCalendar();
+            createActivityList();
+        });
+    </script>
+</body>
+</html>

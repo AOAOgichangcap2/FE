@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수능순웅 - 회원가입</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: #FFF5F5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-subtext {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .signup-container {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #ddd;
+            border-radius: 2px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #A8D1D1;
+            transition: width 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #A8D1D1;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            appearance: none;
+            background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat right 1rem center;
+            background-size: 1em;
+        }
+
+        .form-group .validation-message {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: #e74c3c;
+            display: none;
+        }
+
+        .step-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background-color: #A8D1D1;
+            color: #333;
+        }
+
+        .btn-secondary {
+            background-color: #eee;
+            color: #333;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .terms-group {
+            margin: 1.5rem 0;
+        }
+
+        .terms-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .terms-check input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .terms-link {
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .back-button {
+                position: static;
+                margin-bottom: 1rem;
+            }
+
+            .step-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* 단계별 폼 스타일 */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        /* 추가 스타일 */
+        .help-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .strength-meter {
+            height: 4px;
+            background-color: #ddd;
+            border-radius: 2px;
+            margin-top: 0.25rem;
+        }
+
+        .strength-meter div {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <a href="login" class="back-button">← 로그인으로 돌아가기</a>
+
+    <div class="logo-container">
+        <h1 class="logo-text">수능순웅</h1>
+        <p class="logo-subtext">회원가입</p>
+    </div>
+
+    <div class="signup-container">
+        <div class="progress-bar">
+            <div class="progress" style="width: 33%;"></div>
+        </div>
+
+        <form id="signupForm">
+            <!-- 단계 1: 기본 정보 -->
+            <div class="step active" id="step1">
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" required placeholder="example@email.com">
+                    <div class="validation-message">유효한 이메일 주소를 입력해주세요.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" required placeholder="8자 이상의 비밀번호">
+                    <div class="password-strength">
+                        <div class="strength-meter">
+                            <div style="width: 0%; background-color: #e74c3c;"></div>
+                        </div>
+                    </div>
+                    <p class="help-text">영문, 숫자, 특수문자를 포함한 8자 이상</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordConfirm">비밀번호 확인</label>
+                    <input type="password" id="passwordConfirm" required placeholder="비밀번호를 다시 입력해주세요">
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn btn-primary" onclick="nextStep(1)">다음</button>
+                </div>
+            </div>
+
+            <!-- 단계 2: 개인 정보 -->
+            <div class="step" id="step2">
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" required placeholder="실명을 입력해주세요">
+                </div>
+
+                <div class="form-group">
+                    <label for="school">학교</label>
+                    <input type="text" id="school" required placeholder="학교명을 입력해주세요">
+                </div>
+
+                <div class="form-group">
+                    <label for="grade">학년</label>
+                    <select id="grade" required>
+                        <option value="">선택해주세요</option>
+                        <option value="1">1학년</option>
+                        <option value="2">2학년</option>
+                        <option value="3">3학년</option>
+                        <option value="other">수험생</option>
+                    </select>
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(2)">이전</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">다음</button>
+                </div>
+            </div>
+
+            <!-- 단계 3: 이용약관 -->
+            <div class="step" id="step3">
+                <div class="terms-group">
+                    <div class="terms-check">
+                        <input type="checkbox" id="termsAll">
+                        <label for="termsAll">전체 동의</label>
+                    </div>
+                    <hr style="margin: 1rem 0;">
+                    <div class="terms-check">
+                        <input type="checkbox" id="terms1" required>
+                        <label for="terms1">서비스 이용약관 동의 (필수)</label>
+                        <span class="terms-link">보기</span>
+                    </div>
+                    <div class="terms-check">
+                        <input type="checkbox" id="terms2" required>
+                        <label for="terms2">개인정보 처리방침 동의 (필수)</label>
+                        <span class="terms-link">보기</span>
+                    </div>
+                    <div class="terms-check">
+                        <input type="checkbox" id="terms3">
+                        <label for="terms3">마케팅 정보 수신 동의 (선택)</label>
+                    </div>
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(3)">이전</button>
+                    <button type="submit" class="btn btn-primary">가입완료</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        function updateProgress() {
+            const progress = document.querySelector('.progress');
+            progress.style.width = `${((currentStep - 1) / 2) * 100}%`;
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+        }
+
+        function nextStep(currentStep) {
+            if (validateStep(currentStep)) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function prevStep(currentStep) {
+            showStep(currentStep - 1);
+        }
+
+        function validateStep(step) {
+            const stepElement = document.getElementById(`step${step}`);
+            const inputs = stepElement.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value) {
+                    isValid = false;
+                    input.classList.add('invalid');
+                } else {
+                    input.classList.remove('invalid');
+                }
+            });
+
+            if (step === 1) {
+                const password = document.getElementById('password').value;
+                const passwordConfirm = document.getElementById('passwordConfirm').value;
+                if (password !== passwordConfirm) {
+                    isValid = false;
+                    alert('비밀번호가 일치하지 않습니다.');
+                }
+            }
+
+            return isValid;
+        }
+
+        // 전체 동의 체크박스 처리
+        document.getElementById('termsAll').addEventListener('change', (e) => {
+            const checkboxes = document.querySelectorAll('.terms-check input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = e.target.checked);
+        });
+
+        // 폼 제출 처리
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validateStep(3)) {
+                // 여기에 회원가입 처리 로직 추가
+                alert('회원가입이 완료되었습니다!');
+                window.location.href = '/login';
+            }
+        });
+
+        // 비밀번호 강도 체크
+        document.getElementById('password').addEventListener('input', (e) => {
+            const password = e.target.value;
+            const strength = checkPasswordStrength(password);
+            updatePasswordStrengthMeter(strength);
+        });
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength += 25;
+            if (password.match(/[A-Z]/)) strength += 25;
+            if (password.match(/[0-9]/)) strength += 25;
+            if (password.match(/[^A-Za-z0-9]/)) strength += 25;
+            return strength;
+        }
+
+        function updatePasswordStrengthMeter(strength) {
+            const meter = document.querySelector('.strength-meter div');
+            meter.style.width = `${strength}%`;
+            if (strength < 50) {
+                meter.style.backgroundColor = '#e74c3c';
+            } else if (strength < 75) {
+                meter.style.backgroundColor = '#f1c40f';
+            } else {
+                meter.style.backgroundColor = '#2ecc71';
+            }
+        }
+    </script>
+</body>
+</html>
