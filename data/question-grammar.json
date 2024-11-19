@@ -4,11 +4,11 @@
     {
       "id": "2024-reading-1",
       "year": 2024,
-      "month": "수능",  // "수능", "6월", "9월" 등
+      "month": "수능",  
       "metadata": {
-        "difficulty": 3,  // 1-5 난이도
+        "difficulty": 3, 
         "tags": ["경제", "과학", "인문"],
-        "timeExpected": 180  // 예상 풀이 시간(초)
+        "timeExpected": 180  
       },
       "passage": {
         "title": "독서 지문 제목",
@@ -18,8 +18,8 @@
       "questionSet": [
         {
           "questionId": 1,
-          "type": "multiple-choice",  // "multiple-choice", "short-answer" 등
-          "points": 3,  // 배점
+          "type": "multiple-choice", 
+          "points": 3,  
           "content": "윗글을 이해한 내용으로 적절하지 않은 것은?",
           "options": [
             {
@@ -30,7 +30,6 @@
               "id": 2,
               "text": "독서 전략의 선택을 위해 개별 전략들에 대한 지식이 필요하다."
             }
-            // ... 나머지 선택지
           ],
           "correctAnswer": 2,
           "explanation": "해설 내용",
@@ -42,9 +41,7 @@
             }
           ]
         }
-        // ... 추가 문제들
       ]
     }
-    // ... 추가 지문-문제 세트
   ]
 }

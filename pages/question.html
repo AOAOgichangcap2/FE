@@ -86,6 +86,85 @@
             white-space: pre-line;
         }
 
+        /* 형광펜 스타일 */
+        .highlight-yellow {
+            background-color: rgba(255, 255, 0, 0.5);
+            border-radius: 2px;
+        }
+
+        .highlight-mode {
+            cursor: pointer;
+        }
+
+        ::selection {
+            background: rgba(255, 255, 0, 0.3);
+        }
+
+        /* 메모 컨테이너 스타일 */
+        .memo-container {
+            background: #FFF5F5;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+             /*display: none; 기본적으로 보임 */
+        }
+
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .memo-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .memo-content {
+            width: 100%;
+        }
+
+        .memo-content textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 1rem;
+            line-height: 1.6;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        .memo-content textarea:focus {
+            outline: none;
+            border-color: #A8D1D1;
+        }
+
+        /* 버튼 스타일 수정 */
+        .passage-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            background-color: #A8D1D1;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .action-button:hover {
+            background-color: #8FB9B9;
+        }
+
         /* 문제 영역 */
         .questions-container {
             background: white;
@@ -261,13 +340,36 @@
         <div class="passage-container">
             <div class="passage-header">
                 <h2>2024학년도 대학수학능력시험</h2>
-                <button class="action-button" onclick="toggleHighlight()">형광펜</button>
+                <div class="passage-actions">
+                    <button class="action-button" onclick="toggleHighlight()">형광펜</button>
+                    <button class="action-button" onclick="toggleMemo()">메모</button>
+                </div>
             </div>
             <div class="passage-content" id="passage">
                 <!-- 지문 내용은 JavaScript로 동적 로드 -->
             </div>
+
+            <!-- memo-container 부분 수정 -->
+            <div class="memo-container" id="memoContainer">
+                <div class="memo-header">
+                    <h3>풀이 메모</h3>
+                    <div class="memo-actions">
+                        <button class="action-button" onclick="saveMemo()">저장</button>
+                        <button class="action-button" onclick="clearMemo()">지우기</button>
+                    </div>
+                </div>
+                <div class="memo-content">
+                    <textarea 
+                        id="memoText" 
+                        placeholder="여기에 풀이 과정을 메모하세요..."
+                        oninput="autoSaveMemo()"
+                    ></textarea>
+                </div>
+            </div>
         </div>
 
+
+        
         <div class="questions-container">
             <div id="questions">
                 <!-- 문제 내용은 JavaScript로 동적 로드 -->
@@ -291,48 +393,220 @@
             </div>
         </div>
     </div>
-
-    <script type="module">
-        import QuestionLoader from '../utils/questionLoader.js';
-
+    <script>
+        // 전역 변수 선언
         let currentQuestionSet = null;
         let selectedAnswers = new Map();
         let timer = null;
         let highlightMode = false;
+    
+        // 함수들을 window 객체에 바인딩
+        window.toggleHighlight = function() {
+            highlightMode = !highlightMode;
+            document.body.style.cursor = highlightMode ? 'crosshair' : 'default';
+        }
+    
+        window.submitAnswers = function() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('submitPopup').style.display = 'block';
+        }
+    
+        window.closePopup = function() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('submitPopup').style.display = 'none';
+        }
+    
+        window.selectAnswer = function(questionNumber, optionId) {
+            selectedAnswers.set(questionNumber, optionId);
+            
+            const options = document.querySelectorAll(`.question:nth-child(${questionNumber}) .option-item`);
+            options.forEach(option => option.classList.remove('selected'));
+            document.querySelector(`.question:nth-child(${questionNumber}) .option-item:nth-child(${optionId})`).classList.add('selected');
+        }
+    
+        window.confirmSubmit = async function() {
+            try {
+                // 답안 제출 처리
+                localStorage.setItem('submittedAnswers', JSON.stringify(Array.from(selectedAnswers.entries())));
+                window.location.href = 'result.html';
+            } catch (error) {
+                console.error('Failed to submit answers:', error);
+            }
+        }
+
+        // question.html의 스크립트 부분에 추가
+        let isHighlightMode = false;
+
+        window.toggleHighlight = function() {
+            isHighlightMode = !isHighlightMode;
+            const passageContent = document.querySelector('.passage-content');
+            const highlightButton = document.querySelector('[onclick="toggleHighlight()"]');
+            
+            if (isHighlightMode) {
+                passageContent.classList.add('highlight-mode');
+                highlightButton.style.backgroundColor = '#FFE082';
+            } else {
+                passageContent.classList.remove('highlight-mode');
+                highlightButton.style.backgroundColor = '#A8D1D1';
+            }
+        }
+
+        // 형광펜 이벤트 리스너 설정
+        function setupHighlightListeners() {
+            const passageContent = document.querySelector('.passage-content');
+            
+            passageContent.addEventListener('mouseup', function(e) {
+                if (!isHighlightMode) return;
+                
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+                
+                if (!selection.isCollapsed) {
+                    const highlightSpan = document.createElement('span');
+                    highlightSpan.className = 'highlight-yellow';
+                    highlightSpan.setAttribute('data-timestamp', Date.now());
+                    
+                    try {
+                        range.surroundContents(highlightSpan);
+                    } catch (error) {
+                        console.log('Cannot highlight overlapping ranges');
+                    }
+                    
+                    // 하이라이트 내용 저장
+                    saveHighlights();
+                }
+            });
+
+            // 더블클릭으로 하이라이트 제거
+            passageContent.addEventListener('dblclick', function(e) {
+                if (!isHighlightMode) return;
+                
+                const highlightSpan = e.target.closest('.highlight-yellow');
+                if (highlightSpan) {
+                    const textNode = document.createTextNode(highlightSpan.textContent);
+                    highlightSpan.parentNode.replaceChild(textNode, highlightSpan);
+                    saveHighlights();
+                }
+            });
+        }
+
+        // 하이라이트 저장
+        function saveHighlights() {
+            const passageContent = document.querySelector('.passage-content');
+            const highlights = [];
+            
+            passageContent.querySelectorAll('.highlight-yellow').forEach(highlight => {
+                highlights.push({
+                    text: highlight.textContent,
+                    timestamp: highlight.getAttribute('data-timestamp')
+                });
+            });
+            
+            const questionId = sessionStorage.getItem('currentQuestionId');
+            localStorage.setItem(`highlights_${questionId}`, JSON.stringify(highlights));
+        }
+
+        // 하이라이트 복원
+        function loadHighlights() {
+            const questionId = sessionStorage.getItem('currentQuestionId');
+            const savedHighlights = localStorage.getItem(`highlights_${questionId}`);
+            
+            if (savedHighlights) {
+                const highlights = JSON.parse(savedHighlights);
+                const passageContent = document.querySelector('.passage-content');
+                const text = passageContent.textContent;
+                
+                highlights.forEach(highlight => {
+                    // 텍스트 매칭으로 하이라이트 위치 찾기
+                    const index = text.indexOf(highlight.text);
+                    if (index !== -1) {
+                        const range = document.createRange();
+                        const startNode = passageContent.firstChild;
+                        range.setStart(startNode, index);
+                        range.setEnd(startNode, index + highlight.text.length);
+                        
+                        const highlightSpan = document.createElement('span');
+                        highlightSpan.className = 'highlight-yellow';
+                        highlightSpan.setAttribute('data-timestamp', highlight.timestamp);
+                        range.surroundContents(highlightSpan);
+                    }
+                });
+            }
+        }
+
+        // 나머지 코드는 type="module" 스크립트에서 계속 사용
+    </script>
+
+    <script type="module">
+        import QuestionLoader from '../utils/questionLoader.js';
+        import MemoManager from '../utils/memoManager.js';
+
+        // let currentQuestionSet = null;
+        // let selectedAnswers = new Map();
+        // let timer = null;
+        // let highlightMode = false;
 
         // question.html의 스크립트 부분
         async function initializePage() {
             const subject = sessionStorage.getItem('selectedSubject');
             if (!subject) {
-                // 과목이 선택되지 않았다면 과목 선택 페이지로 리다이렉트
                 window.location.href = 'subjects.html';
                 return;
             }
 
             try {
-                // 선택된 과목에 따라 적절한 JSON 파일 로드
-                const response = await fetch(`../data/question-${subject}.json`);
-                const questionData = await response.json();
-                
+                console.log('Loading questions for subject:', subject);
+                currentQuestionSet = await QuestionLoader.loadQuestionsBySubject(subject);
+                console.log('Processed question set:', currentQuestionSet);
+
+                if (!currentQuestionSet) {
+                    throw new Error('Failed to load question data');
+                }
+
                 // 지문 렌더링
-                renderPassage(questionData.passage);
+                renderPassage(currentQuestionSet.passage);
                 
                 // 문제 렌더링
-                renderQuestions(questionData.questionSet);
+                renderQuestions(currentQuestionSet.questionSet);
                 
                 // 타이머 시작
-                startTimer(questionData.metadata.timeExpected);
+                startTimer(currentQuestionSet.metadata.timeExpected);
+
+                // 메모 매니저 초기화
+                MemoManager.initialize();
+
+                // 형광펜 리스너 설정
+                setupHighlightListeners();
+        
+                // 저장된 하이라이트 복원
+                loadHighlights();
             } catch (error) {
-                console.error('Failed to load question data:', error);
+                console.error('Initialization error:', error);
+                alert('문제 데이터를 불러오는데 실패했습니다.');
             }
         }
+
         function renderPassage(passage) {
             const passageElement = document.getElementById('passage');
-            passageElement.textContent = passage.content;
+            if (passage && passage.content) {
+                console.log('Rendering passage:', passage);
+                passageElement.innerHTML = `
+                    ${passage.title ? `<h3>${passage.title}</h3>` : ''}
+                    <div class="passage-text">${passage.content}</div>
+                `;
+            } else {
+                console.error('Invalid passage data:', passage);
+            }
         }
 
         function renderQuestions(questions) {
             const questionsContainer = document.getElementById('questions');
+            if (!Array.isArray(questions)) {
+                console.error('Questions is not an array:', questions);
+                return;
+            }
+
+            console.log('Rendering questions:', questions);
             questionsContainer.innerHTML = questions.map((question, index) => `
                 <div class="question">
                     <div class="question-header">
@@ -342,7 +616,7 @@
                     <p class="question-content">${question.content}</p>
                     <ul class="options-list">
                         ${question.options.map((option, optIndex) => `
-                            <li class="option-item" onclick="selectAnswer(${index + 1}, ${option.id})">
+                            <li class="option-item" onclick="window.selectAnswer(${index + 1}, ${option.id})">
                                 <span class="option-number">${optIndex + 1}</span>
                                 <span class="option-text">${option.text}</span>
                             </li>
@@ -401,7 +675,8 @@
                     currentQuestionSet.id,
                     selectedAnswers
                 );
-                window.location.href = 'result?id=' + currentQuestionSet.id;
+            // URL 수정: .html 확장자 추가 및 쿼리스트링 제거
+            window.location.href = 'result.html';
             } catch (error) {
                 console.error('Failed to submit answers:', error);
             }
@@ -416,6 +691,15 @@
         window.submitAnswers = submitAnswers;
         window.closePopup = closePopup;
         window.confirmSubmit = confirmSubmit;
+        // MemoManager 인스턴스를 전역으로 사용할 수 있게 설정
+        window.memoManager = MemoManager;
+        window.toggleMemo = () => MemoManager.toggleMemo();
+        window.saveMemo = () => MemoManager.saveMemo();
+        window.clearMemo = () => MemoManager.clearMemo();
+        window.autoSaveMemo = () => memoManager.autoSaveMemo();
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', initializePage);
     </script>
 </body>
 </html>

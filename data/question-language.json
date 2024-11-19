@@ -1,0 +1,47 @@
+{
+  "subject": "reading",
+  "questions": [
+    {
+      "id": "2024-reading-1",
+      "year": 2024,
+      "month": "수능",  
+      "metadata": {
+        "difficulty": 3, 
+        "tags": ["경제", "과학", "인문"],
+        "timeExpected": 180  
+      },
+      "passage": {
+        "title": "독서 지문 제목",
+        "content": "독서는 독자가 목표한 결과에 도달하기 위해...",
+        "reference": "출처 정보(있는 경우)"
+      },
+      "questionSet": [
+        {
+          "questionId": 1,
+          "type": "multiple-choice", 
+          "points": 3,  
+          "content": "윗글을 이해한 내용으로 적절하지 않은 것은?",
+          "options": [
+            {
+              "id": 1,
+              "text": "독서 전략을 선택할 때 독자의 목표를 고려할 필요가 있다."
+            },
+            {
+              "id": 2,
+              "text": "독서 전략의 선택을 위해 개별 전략들에 대한 지식이 필요하다."
+            }
+          ],
+          "correctAnswer": 2,
+          "explanation": "해설 내용",
+          "relatedPassageParts": [
+            {
+              "startIndex": 15,
+              "endIndex": 45,
+              "highlight": "초인지는 글을 읽기 시작한 후..."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

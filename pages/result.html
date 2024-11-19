@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수능순웅 - 결과 확인</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: #FFF5F5;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* 네비게이션 */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .nav-button {
+            border: 2px solid #000;
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            color: #000;
+        }
+
+        /* 결과 요약 섹션 */
+        .summary-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #A8D1D1;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 상세 결과 섹션 */
+        .detail-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #A8D1D1;
+        }
+
+        .question-result {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            font-weight: bold;
+        }
+
+        .result-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .correct {
+            background: #A8D1D1;
+            color: #fff;
+        }
+
+        .incorrect {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .memo-content {
+            white-space: pre-line;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid #ddd;
+        }
+
+        /* 버튼 */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .action-button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #A8D1D1;
+            color: #000;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .action-button:hover {
+            background-color: #8FB9B9;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .detail-container {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-container">
+        <a href="subjects.html" class="nav-button">수능순웅</a>
+        <a href="mypage.html" class="nav-button">내 정보</a>
+    </nav>
+
+    <div class="summary-container">
+        <h2>결과 요약</h2>
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div class="summary-value">80%</div>
+                <div class="summary-label">정답률</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value">15:30</div>
+                <div class="summary-label">소요 시간</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value">4/5</div>
+                <div class="summary-label">정답 개수</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-container">
+        <div class="result-section">
+            <h3 class="section-title">문항별 결과</h3>
+            <div id="questionResults">
+                <!-- 동적으로 추가될 문항별 결과 -->
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3 class="section-title">나의 메모</h3>
+            <div class="memo-content" id="memo">
+                <!-- 동적으로 추가될 메모 내용 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="subjects.html" class="action-button">다른 문제 풀기</a>
+        <a href="mypage.html" class="action-button">학습 현황 보기</a>
+    </div>
+
+    <script type="module">
+        import QuestionLoader from '../utils/questionLoader.js';
+        import MemoManager from '../utils/memoManager.js';
+
+        async function initializeResultPage() {
+            try {
+                // 답안 데이터 불러오기
+                const submittedAnswers = JSON.parse(localStorage.getItem('submittedAnswers'));
+                const subject = sessionStorage.getItem('selectedSubject');
+                const questionData = await QuestionLoader.loadQuestionsBySubject(subject);
+                
+                // 결과 렌더링
+                renderResults(questionData, submittedAnswers);
+                
+                // 메모 불러오기
+                loadMemo();
+                
+                // 통계 업데이트
+                updateStatistics(questionData, submittedAnswers);
+            } catch (error) {
+                console.error('Failed to load result data:', error);
+            }
+        }
+
+        function renderResults(questionData, submittedAnswers) {
+            const resultsContainer = document.getElementById('questionResults');
+            const questions = questionData.questionSet;
+            
+            questions.forEach((question, index) => {
+                const userAnswer = submittedAnswers.get(index + 1);
+                const isCorrect = userAnswer === question.correctAnswer;
+                
+                const resultHtml = `
+                    <div class="question-result">
+                        <div class="question-header">
+                            <span class="question-number">문제 ${index + 1}</span>
+                            <span class="result-badge ${isCorrect ? 'correct' : 'incorrect'}">
+                                ${isCorrect ? '정답' : '오답'}
+                            </span>
+                        </div>
+                        <div class="explanation">
+                            ${question.explanation}
+                        </div>
+                    </div>
+                `;
+                
+                resultsContainer.innerHTML += resultHtml;
+            });
+        }
+
+        function loadMemo() {
+            const questionId = sessionStorage.getItem('currentQuestionId');
+            const memo = localStorage.getItem(`memo_${questionId}`);
+            const memoContainer = document.getElementById('memo');
+            
+            if (memo) {
+                memoContainer.textContent = memo;
+            } else {
+                memoContainer.textContent = '작성된 메모가 없습니다.';
+            }
+        }
+
+        function updateStatistics(questionData, submittedAnswers) {
+            const totalQuestions = questionData.questionSet.length;
+            const correctAnswers = Array.from(submittedAnswers.entries()).filter(
+                ([_, answer]) => answer === questionData.questionSet[_ - 1].correctAnswer
+            ).length;
+            
+            // 정답률 업데이트
+            document.querySelector('.summary-value').textContent = 
+                `${Math.round(correctAnswers / totalQuestions * 100)}%`;
+            
+            // 정답 개수 업데이트
+            document.querySelectorAll('.summary-value')[2].textContent = 
+                `${correctAnswers}/${totalQuestions}`;
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', initializeResultPage);
+    </script>
+</body>
+</html>
